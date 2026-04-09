@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0A0A0A"/>
+  <!-- N -->
+  <rect x="32"  y="170" width="22" height="170" fill="#FFFFFF"/>
+  <polygon points="54,170 54,228 128,340 128,282" fill="#FFFFFF"/>
+  <rect x="128" y="170" width="22" height="170" fill="#FFFFFF"/>
+  <!-- U -->
+  <rect x="162" y="170" width="22" height="128" fill="#FFFFFF"/>
+  <rect x="162" y="298" width="74" height="22"  fill="#FFFFFF"/>
+  <rect x="214" y="170" width="22" height="128" fill="#FFFFFF"/>
+  <!-- L -->
+  <rect x="250" y="170" width="22" height="170" fill="#FFFFFF"/>
+  <rect x="250" y="318" width="68" height="22"  fill="#FFFFFF"/>
+  <!-- A: two diagonals + crossbar -->
+  <polygon points="342,170 364,170 408,340 386,340" fill="#FFFFFF"/>
+  <polygon points="432,170 454,170 410,340 388,340" fill="#FFFFFF"/>
+  <rect x="354" y="274" width="80" height="18" fill="#FFFFFF"/>
+  <!-- thin rule -->
+  <rect x="32" y="362" width="448" height="1.5" fill="#2A2A2A"/>
+  <!-- REPASOS subtitle -->
+  <text x="256" y="408" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-size="34" font-weight="300" fill="#555555" text-anchor="middle" letter-spacing="9">REPASOS</text>
+</svg>
