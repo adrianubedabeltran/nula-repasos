@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore, collection, onSnapshot,
-  addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy
+  addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy,
+  getDoc, setDoc
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -330,6 +331,7 @@ export default function App() {
   const [filtro, setFiltro]             = useState("pendiente");
   const [search, setSearch]             = useState("");
   const [obraTitle, setObraTitle]       = useState("Reforma C/ Lagasca 14");
+  const obraRef = doc(db, "config", "obra");
   const [editingTitle, setEditingTitle] = useState(false);
   const [showInvite, setShowInvite]     = useState(false);
   const titleRef = useRef();
@@ -339,6 +341,10 @@ export default function App() {
     const unsub = onSnapshot(q, (snap) => {
       setNotes(snap.docs.map(d => ({ id: d.id, ...d.data() })));
       setLoading(false);
+    });
+    // Cargar título de obra desde Firestore
+    getDoc(doc(db, "config", "obra")).then(d => {
+      if (d.exists() && d.data().titulo) setObraTitle(d.data().titulo);
     });
     return unsub;
   }, []);
@@ -402,7 +408,7 @@ export default function App() {
             {!IS_CLIENTE ? (
               editingTitle ? (
                 <input ref={titleRef} value={obraTitle} onChange={e => setObraTitle(e.target.value)}
-                  onBlur={() => setEditingTitle(false)} onKeyDown={e => { if (e.key === "Enter") setEditingTitle(false); }}
+                  onBlur={async () => { setEditingTitle(false); await setDoc(doc(db, "config", "obra"), { titulo: obraTitle }); }} onKeyDown={async (e) => { if (e.key === "Enter") { setEditingTitle(false); await setDoc(doc(db, "config", "obra"), { titulo: obraTitle }); } }}
                   style={{ fontSize: 13, fontFamily: T.mono, color: T.black, letterSpacing: "0.06em", marginTop: 3, border: "none", borderBottom: `1px solid ${T.black}`, background: "transparent", outline: "none", padding: "1px 0", width: "100%", textTransform: "uppercase" }} />
               ) : (
                 <div onClick={() => setEditingTitle(true)} style={{ fontSize: 13, fontFamily: T.mono, color: T.mid, letterSpacing: "0.06em", marginTop: 3, cursor: "text", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
