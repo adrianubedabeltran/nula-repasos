@@ -144,7 +144,24 @@ function Modal({ note, onClose, onSave, onDelete, isCliente }) {
   const handleFoto = (e) => {
     Array.from(e.target.files).forEach(file => {
       const reader = new FileReader();
-      reader.onload = (ev) => setForm(f => ({ ...f, fotos: [...(f.fotos || []), { url: ev.target.result, name: file.name }] }));
+      reader.onload = (ev) => {
+        // Comprimir la imagen antes de guardar
+        const img = new window.Image();
+        img.onload = () => {
+          const MAX = 800; // px máximo
+          let { width, height } = img;
+          if (width > MAX || height > MAX) {
+            if (width > height) { height = Math.round(height * MAX / width); width = MAX; }
+            else { width = Math.round(width * MAX / height); height = MAX; }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width; canvas.height = height;
+          canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+          const url = canvas.toDataURL("image/jpeg", 0.6); // calidad 60%
+          setForm(f => ({ ...f, fotos: [...(f.fotos || []), { url, name: file.name }] }));
+        };
+        img.src = ev.target.result;
+      };
       reader.readAsDataURL(file);
     });
   };
