@@ -141,29 +141,24 @@ function Modal({ note, onClose, onSave, onDelete, isCliente }) {
   const [viewingPhoto, setViewingPhoto] = useState(null);
   const fileRef = useRef();
 
-  const handleFoto = (e) => {
-    Array.from(e.target.files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        // Comprimir la imagen antes de guardar
-        const img = new window.Image();
-        img.onload = () => {
-          const MAX = 800; // px máximo
-          let { width, height } = img;
-          if (width > MAX || height > MAX) {
-            if (width > height) { height = Math.round(height * MAX / width); width = MAX; }
-            else { width = Math.round(width * MAX / height); height = MAX; }
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = width; canvas.height = height;
-          canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-          const url = canvas.toDataURL("image/jpeg", 0.6); // calidad 60%
-          setForm(f => ({ ...f, fotos: [...(f.fotos || []), { url, name: file.name }] }));
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
+  const handleFoto = async (e) => {
+    const files = Array.from(e.target.files);
+    for (const file of files) {
+      try {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", "nula-repasos");
+        fd.append("cloud_name", "dye8pd7tm");
+        const res = await fetch("https://api.cloudinary.com/v1_1/dye8pd7tm/image/upload", {
+          method: "POST", body: fd
+        });
+        const data = await res.json();
+        const url = data.secure_url;
+        setForm(f => ({ ...f, fotos: [...(f.fotos || []), { url, name: file.name }] }));
+      } catch (err) {
+        console.error("Error subiendo foto:", err);
+      }
+    }
   };
 
   const lbl = { display: "block", fontSize: 10, fontFamily: T.mono, color: T.mid, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5, marginTop: 18 };
