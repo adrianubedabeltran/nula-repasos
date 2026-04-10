@@ -124,8 +124,13 @@ function NoteCard({ note, onEdit, onView }) {
         {note.comentario}
       </div>
       {note.fotos?.length > 0 && (
-        <div style={{ fontSize: 10, fontFamily: T.mono, color: T.light, letterSpacing: "0.04em" }}>
-          {note.fotos.length} foto{note.fotos.length > 1 ? "s" : ""}
+        <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
+          {note.fotos.slice(0, 4).map((f, i) => (
+            <img key={i} src={f.url} alt="" style={{ width: 36, height: 36, objectFit: "cover", flexShrink: 0 }} />
+          ))}
+          {note.fotos.length > 4 && (
+            <span style={{ fontSize: 10, fontFamily: T.mono, color: T.light }}>+{note.fotos.length - 4}</span>
+          )}
         </div>
       )}
     </div>
