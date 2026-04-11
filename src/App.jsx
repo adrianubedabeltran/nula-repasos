@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { jsPDF } from "jspdf";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore, collection, onSnapshot,
@@ -30,7 +31,7 @@ const HABITACIONES = [
 const RESPONSABLES = [
   "Electricista","Fontanero","Alicatador","Pintor","Carpintero",
   "Yesero","Solador","Instalador HVAC","Cristalero",
-  "Carpintero de aluminio","Limpieza","Cerrajero","Nula Studio","Rares","Otro"
+  "Carpintero de aluminio","Limpieza","Cerrajero","Tapicería","Nula Studio","Rares","Otro"
 ];
 const ESTADOS = {
   pendiente:  { label: "Pendiente",  dot: "#000" },
@@ -131,7 +132,7 @@ function NoteCard({ note, onEdit, onView }) {
             <span style={{ fontSize: 10, fontFamily: T.mono, color: T.light }}>+{note.fotos.length - 4}</span>
           )}
           {note.fotos.slice(0, 4).map((f, i) => (
-            <img key={i} src={f.url} alt="" style={{ width: 36, height: 36, objectFit: "cover", flexShrink: 0, borderRadius: "50%", filter: "grayscale(100%)" }} />
+            <img key={i} src={f.url} alt="" style={{ width: 36, height: 36, objectFit: "cover", flexShrink: 0, borderRadius: "50%", filter: "grayscale(50%)" }} />
           ))}
         </div>
       )}
@@ -332,7 +333,6 @@ function InviteModal({ obraTitle, onClose }) {
 
 // ── Generador de informe PDF ──────────────────────────────────────
 async function generarInforme(notes, obraTitle) {
-  const { jsPDF } = await import("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const W = 210, margin = 16, contentW = W - margin * 2;
   let y = 20;
